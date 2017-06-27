@@ -2,15 +2,21 @@
 
 """
 
-v0.2 - update 2
+v0.3 - v3
 
 """
 
 
-import subprocess, re, sys, getopt
-import socket
+import subprocess, re
+import sys,time,types,getopt
+from dns import resolver,reversename,exception
+import traceback
+
+
 
 def main(argv):
+    myResolver = resolver.Resolver() #create a new instance named 'myResolver'
+    myResolver.nameservers = ['192.168.28.132']
     inputfile = ''
     try:
         opts, args = getopt.getopt(argv,"hi:",["ifile="])
@@ -26,20 +32,23 @@ def main(argv):
     if inputfile == '' :
         print '\n Input file required\n'
         sys.exit(2)
-
     with open(inputfile) as f:
-        for hostname in f:
-            hostname=hostname.rstrip('\r\n')
+        for line in f:
+            ip=line.rstrip('\r\n')
             try:
-            
-                addr = socket.gethostbyname(hostname)
-                print hostname+","+addr
-
+                rev_name = reversename.from_address(ip)
+                myAnswers = myResolver.query(rev_name,"PTR").__iter__().next().to_text()[:-1]
+                nameToIP = myResolver.query(myAnswers,"A").__iter__().next().to_text()[:-1]
+                print "%s,%s,%s,%s"%(ip,rev_name,myAnswers,nameToIP)
+            except resolver.NXDOMAIN: 
+                print "%s,NXDOMAIN"%(ip)
+            except KeyboardInterrupt:
+                exit()
             except:
-                print "something broke with: " + hostname
-                
+                print sys.exc_info()
+                print "%s: UNSPECIFIED ERROR\n"%(ip)
+
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])
-
-    
-    
