@@ -2,7 +2,7 @@
 
 """
 
-Updated: 2016-03-14 frankb1
+v0.2 - update 2
 
 """
 
