@@ -2,7 +2,7 @@
 
 """
 
-v0.3 - v3
+v0.4 - dev4
 
 """
 
@@ -11,6 +11,8 @@ import subprocess, re
 import sys,time,types,getopt
 from dns import resolver,reversename,exception
 import traceback
+from subprocess import call
+
 
 
 
@@ -35,18 +37,19 @@ def main(argv):
     with open(inputfile) as f:
         for line in f:
             ip=line.rstrip('\r\n')
-            try:
-                rev_name = reversename.from_address(ip)
-                myAnswers = myResolver.query(rev_name,"PTR").__iter__().next().to_text()[:-1]
-                nameToIP = myResolver.query(myAnswers,"A").__iter__().next().to_text()[:-1]
-                print "%s,%s,%s,%s"%(ip,rev_name,myAnswers,nameToIP)
-            except resolver.NXDOMAIN: 
-                print "%s,NXDOMAIN"%(ip)
-            except KeyboardInterrupt:
-                exit()
-            except:
-                print sys.exc_info()
-                print "%s: UNSPECIFIED ERROR\n"%(ip)
+            # try:
+                # rev_name = reversename.from_address(ip)
+                # myAnswers = myResolver.query(rev_name,"PTR").__iter__().next().to_text()[:-1]
+                # nameToIP = myResolver.query(myAnswers,"A").__iter__().next().to_text()[:-1]
+                # print "%s,%s,%s,%s"%(ip,rev_name,myAnswers,nameToIP)
+            # except resolver.NXDOMAIN: 
+                # print "%s,NXDOMAIN"%(ip)
+            # except KeyboardInterrupt:
+                # exit()
+            # except:
+                # print sys.exc_info()
+                # print "%s: UNSPECIFIED ERROR\n"%(ip)
+            call(["ls", "-l"])
 
 
 
